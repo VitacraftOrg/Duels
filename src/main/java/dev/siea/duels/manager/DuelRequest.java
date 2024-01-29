@@ -16,7 +16,7 @@ public class DuelRequest {
         this.initiator = initiator;
         this.recipient = recipient;
         this.type = type;
-        Messenger.sendMessage(recipient, initiator.getDisplayName() + " §ewants to Duel you in " + type.getDisplayName(), NotificationReason.SOFT_WARNING);
+        Messenger.sendMessage(recipient, initiator.getDisplayName() + "§e challenged you in " + type.getDisplayName(), NotificationReason.SOFT_WARNING);
     }
 
     public Player getInitiator() {

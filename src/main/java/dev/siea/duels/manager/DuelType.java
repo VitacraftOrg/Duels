@@ -1,10 +1,12 @@
 package dev.siea.duels.manager;
 
 public enum DuelType {
-    UHC("§6UHC"),
-    BOW("$"),
-    SUMO(""),
-    COMBO("");
+    CLASSIC("§eClassic Duel"),
+    UHC("§6UHC Duel"),
+    KIT("§dKit Duel"),
+    BOW("§dBow Duel"),
+    SUMO("§bSumo Duel"),
+    COMBO("§4Combo Duel");
 
     private final String displayName;
     DuelType(String displayName){
