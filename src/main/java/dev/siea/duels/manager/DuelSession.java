@@ -24,4 +24,16 @@ public class DuelSession {
     public DuelType getType(){
         return type;
     }
+
+    public static void playedDied(){
+
+    }
+
+    public static void start(){
+
+    }
+
+    public void stop(){
+
+    }
 }

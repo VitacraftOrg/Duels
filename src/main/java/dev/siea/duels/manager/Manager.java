@@ -29,6 +29,8 @@ public class Manager {
         These are que related methods handling matchmaking
      */
     public static void joinQue(Player player, DuelType type){
+        removeFromOtherQues(player);
+        Messenger.sendMessage(player, "§eJoining que in : " + type.getDisplayName(), NotificationReason.SOFT_WARNING);
         duelQue.put(player,type);
         matchMake();
     }
@@ -99,12 +101,21 @@ public class Manager {
     /*
         These methods manage the stop and handling of Duel sessions
     */
-    public static void stopDuel(DuelSession duelSession){
-
+    private static void stopDuel(DuelSession duelSession){
+        duelSession.stop();
     }
 
     /*
-        These methods remove expired duel requests, and similar
+        These methods manage events during the Duels
+    */
+    public static void playerDied(Player player){
+        DuelSession duelSession = findDuelSession(player);
+        if (duelSession == null) return;
+        stopDuel(duelSession);
+    }
+
+    /*
+        Util Methods
     */
     private static void removeFromOtherQues(Player player){
         for (DuelRequest duelRequest : duelRequests){
@@ -122,5 +133,12 @@ public class Manager {
 
     public static void removeDuelRequest(DuelRequest duelRequest){
         duelRequests.remove(duelRequest);
+    }
+
+    private static DuelSession findDuelSession(Player player){
+        for (DuelSession duelSession : activeDuels){
+            if (duelSession.getPlayers().contains(player)) return duelSession;
+        }
+        return null;
     }
 }
