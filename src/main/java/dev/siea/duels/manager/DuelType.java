@@ -7,7 +7,7 @@ public enum DuelType {
     UHC("§6UHC Duel", Material.GOLDEN_APPLE, "§7No natural regeneration"),
     BOW("§dBow Duel", Material.BOW, "§7Ranged Duel"),
     SUMO("§bSumo Duel", Material.SLIME_BALL, "§7Knock your enemy down"),
-    BOXING("§4Boxing Duel", Material.WOODEN_SWORD, "§70 hit cool-down");
+    BOXING("§4Boxing Duel", Material.WOODEN_SWORD, "§7Combo your enemy for as long as possible");
 
     private final String displayName;
 
