@@ -4,6 +4,7 @@ import dev.siea.base.Base;
 import dev.siea.duels.commands.DuelCommand;
 import dev.siea.duels.creator.CreatorManager;
 import dev.siea.duels.game.GameManager;
+import dev.siea.duels.gui.GUIListener;
 import dev.siea.duels.listeners.PlayerConnectionListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -21,6 +22,7 @@ public final class Duels extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerConnectionListeners(), this);
         getServer().getPluginManager().registerEvents(new GameManager(), this);
         getServer().getPluginManager().registerEvents(new CreatorManager(), this);
+        getServer().getPluginManager().registerEvents(new GUIListener(), this);
     }
 
     @Override

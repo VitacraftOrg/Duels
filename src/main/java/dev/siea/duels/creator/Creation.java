@@ -6,14 +6,17 @@ import dev.siea.duels.game.DuelType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Creation {
     private final Player player;
     private CreationState creationState = CreationState.TYPE;
     private DuelType type;
-    private Inventory items;
+    private HashMap<ItemStack, Integer> items = new HashMap<>();
 
     private Location center;
     private Location spawn1;
@@ -78,7 +81,13 @@ public class Creation {
                 Messenger.sendMessage(player, "§c" + "\"DONE\"" + " is not a valid Duel type. Valid types are: " + Arrays.toString(DuelType.values()).replace("[", "").replace("]",""), NotificationReason.HARD_WARNING);
                 return;
             case ITEMS:
-                items = player.getInventory();
+                for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+                ItemStack itemStack = player.getInventory().getItem(slot);
+                if (itemStack != null && !itemStack.getType().isAir()) {
+                    items.put(itemStack, slot);
+                }
+            }
+                next();
                 break;
             case CENTER:
                 center = player.getLocation();
@@ -195,7 +204,7 @@ public class Creation {
         return type;
     }
 
-    public Inventory getItems(){
+    public HashMap<ItemStack, Integer> getItems(){
         return items;
     }
     public Location getCenter(){

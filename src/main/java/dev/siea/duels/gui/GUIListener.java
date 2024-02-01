@@ -11,15 +11,17 @@ import org.bukkit.inventory.Inventory;
 import java.util.HashMap;
 
 public class GUIListener implements Listener {
-    private static HashMap<Inventory, Player> openInventories = new HashMap<>();
+    private static final HashMap<Inventory, Player> openInventories = new HashMap<>();
 
     @EventHandler
     public static void onInventoryClick(InventoryClickEvent e){
+        if (!openInventories.containsKey(e.getInventory())) return;
+        e.setCancelled(true);
         DuelType duelType;
         int duelTypeSlot = e.getSlot()-11;
         try{
             duelType = DuelType.values()[duelTypeSlot];
-        } catch (NullPointerException ignore){
+        } catch (IndexOutOfBoundsException ignore){
             return;
         }
         Player target = openInventories.get(e.getInventory());

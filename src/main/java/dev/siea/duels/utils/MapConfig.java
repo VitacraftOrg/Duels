@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.io.*;
 import java.util.*;
@@ -16,7 +18,7 @@ public class MapConfig {
     private static final String file = "maps.yml";
     public static void saveMap(Creation creation){
         DuelType type = creation.getType();
-        Inventory items = creation.getItems();
+        HashMap<ItemStack, Integer> items = creation.getItems();
         Location center = creation.getCenter();
         Location spawn1 = creation.getSpawn1();
         Location spawn2 = creation.getSpawn2();
@@ -28,10 +30,12 @@ public class MapConfig {
         ConfigUtil config = new ConfigUtil(Duels.getPlugin(),file);
 
         config.getConfig().set(id + ".type", type.toString());
-        config.getConfig().set(id + ".items", InventoryBase64DeSerializer.toBase64(items));
+        for (ItemStack itemStack : items.keySet()){
+            config.getConfig().set(id + ".items." + items.get(itemStack), itemStack);
+        }
         config.getConfig().set(id + ".center", center);
         config.getConfig().set(id + ".spawn1", spawn1);
-        config.getConfig().set(id + ".spawn1", spawn2);
+        config.getConfig().set(id + ".spawn2", spawn2);
         config.getConfig().set(id + ".vertex1", vertex1);
         config.getConfig().set(id + ".vertex2", vertex2);
 
@@ -52,17 +56,15 @@ public class MapConfig {
             ConfigurationSection c = config.getConfig().getConfigurationSection(key);
             assert c != null;
             DuelType type = DuelType.valueOf(c.getString("type"));
-            Inventory items;
-            try {
-                items = InventoryBase64DeSerializer.fromBase64(c.getString("items"));
-            } catch (IOException e) {
-                items = Bukkit.createInventory(null, 3*9);
+            HashMap<ItemStack, Integer> items = new HashMap<>();
+            for (String itemSection : Objects.requireNonNull(c.getConfigurationSection("items")).getKeys(false)){
+                items.put(Objects.requireNonNull(c.getConfigurationSection("items.")).getItemStack(itemSection), Integer.valueOf(itemSection));
             }
             Location center = c.getLocation("center");
-            Location spawn1 = c.getLocation("center");
-            Location spawn2 = c.getLocation("center");
-            Location vertex1 = c.getLocation("center");
-            Location vertex2 = c.getLocation("center");
+            Location spawn1 = c.getLocation("spawn1");
+            Location spawn2 = c.getLocation("spawn2");
+            Location vertex1 = c.getLocation("vertex1");
+            Location vertex2 = c.getLocation("vertex2");
             DuelMap map = new DuelMap(type,items,center,spawn1,spawn2,vertex1,vertex2);
             maps.add(map);
         }

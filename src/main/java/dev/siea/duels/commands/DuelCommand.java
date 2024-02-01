@@ -2,9 +2,11 @@ package dev.siea.duels.commands;
 
 import dev.siea.base.api.messenger.Messenger;
 import dev.siea.base.api.messenger.NotificationReason;
+import dev.siea.duels.Duels;
 import dev.siea.duels.creator.CreatorManager;
 import dev.siea.duels.gui.DuelSelection;
 import dev.siea.duels.game.DuelType;
+import dev.siea.duels.utils.ConfigUtil;
 import dev.siea.duels.utils.getPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,13 +21,22 @@ public class DuelCommand implements CommandExecutor {
             return true;
         }
         if (args.length < 1){
-            return false;
+            Player player = (Player) sender;
+            player.openInventory(DuelSelection.getInventory());
+            return true;
         }
         String subcommand = args[0];
         if (subcommand.equalsIgnoreCase("list")){
             for (DuelType duelType : DuelType.values()){
                 Messenger.sendMessage(((Player) sender),duelType.getDisplayName() + " §7- " + duelType.getDescription(), NotificationReason.SOFT_WARNING);
             }
+            return true;
+        }
+        if (subcommand.equalsIgnoreCase("spawn")){
+            ConfigUtil config = new ConfigUtil(Duels.getPlugin(),"locations.yml");
+            config.getConfig().set("spawn", ((Player) sender).getLocation());
+            config.save();
+            Messenger.sendMessage(((Player) sender),"§eYou successfully set the Duels spawn", NotificationReason.ADMINISTRATIVE);
             return true;
         }
         if (subcommand.equalsIgnoreCase("create")){

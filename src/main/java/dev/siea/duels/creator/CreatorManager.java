@@ -12,6 +12,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.checkerframework.checker.units.qual.C;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class CreatorManager implements Listener {
@@ -29,6 +30,7 @@ public class CreatorManager implements Listener {
     public static void finishCreation(Creation creation, Player player){
         activeCreations.remove(player);
         MapConfig.saveMap(creation);
+        Messenger.sendMessage(player, "§eSuccessfully created new Map", NotificationReason.ADMINISTRATIVE);
     }
 
     public static void cancelCreation(Creation creation, Player player){

@@ -24,7 +24,7 @@ public class GameManager implements Listener {
     private static final HashMap<Player, DuelType> duelQue = new HashMap<>();
     private static final HashMap<DuelMap, Boolean> duelMaps = new HashMap<>();
 
-    private static Location spawn = reloadSpawn();
+    private static final Location spawn = reloadSpawn();
 
 
     public GameManager(){
@@ -217,18 +217,28 @@ public class GameManager implements Listener {
     public static void onEntityDamage(EntityDamageEvent e){
         try{
             Player player = (Player) e.getEntity();
-            if (!(player.getHealth() - e.getDamage() <= 0)) return;
+            DuelSession duelSession = null;
             for (DuelSession session : activeDuels){
-                if (session.getPlayers().contains(player)) session.playerDied(player);
-                return;
+                if (session.getPlayers().contains(player)) {
+                    duelSession = session;
+                    break;
+                }
             }
-            e.setCancelled(true);
+            if (duelSession != null){
+                if (!(player.getHealth() - e.getDamage() <= 0)) return;
+                e.setCancelled(true);
+                duelSession.playerDied(player);
+            }
+            else {
+                e.setCancelled(true);
+            }
         } catch (Exception ignore){
         }
     }
 
     @EventHandler
     public static void onBlockBreak(BlockBreakEvent e){
+        if (e.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         for (DuelSession session : activeDuels){
             if (session.getPlayers().contains(e.getPlayer())) session.blockBroken(e);
             return;
@@ -238,6 +248,7 @@ public class GameManager implements Listener {
 
     @EventHandler
     public static void onBlockBreak(BlockPlaceEvent e){
+        if (e.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         for (DuelSession session : activeDuels){
             if (session.getPlayers().contains(e.getPlayer())) session.blockPlaced(e);
             return;

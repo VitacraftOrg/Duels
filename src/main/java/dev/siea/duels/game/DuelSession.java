@@ -6,12 +6,15 @@ import dev.siea.base.api.messenger.NotificationReason;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DuelSession {
@@ -70,9 +73,11 @@ public class DuelSession {
 
         player1.teleport(map.getSpawn1());
         player2.teleport(map.getSpawn2());
-
+        HashMap<ItemStack, Integer> items = map.getItems();
         for (Player player : players){
-            player.getInventory().setContents(map.getItems().getContents());
+            for (ItemStack item : items.keySet()){
+                player.getInventory().setItem(items.get(item), item);
+            }
             player.setHealth(20);
             player.setSaturation(20);
             player.setGameMode(GameMode.SURVIVAL);
@@ -81,6 +86,10 @@ public class DuelSession {
     }
 
     public void start(){
+
+        for (Player player : players){
+            Messenger.sendMessage(player, "§cStart!", NotificationReason.SOFT_WARNING, MessageType.ACTIONBAR);
+        }
         gameState = GameState.PLAYING;
     }
 
@@ -120,6 +129,9 @@ public class DuelSession {
         if (gameState == GameState.PLAYING){
             alivePlayers.remove(player);
             Messenger.sendMessage(player, "§You died!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
+            for (Player loopplayer: alivePlayers){
+                Messenger.sendMessage(loopplayer, "§c" + player.getName() + " died.", NotificationReason.SOFT_WARNING, MessageType.CHAT_MESSAGE);
+            }
             if (alivePlayers.size() <= 1){
                 stop();
             }
