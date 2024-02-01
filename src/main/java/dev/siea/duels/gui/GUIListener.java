@@ -1,7 +1,7 @@
 package dev.siea.duels.gui;
 
-import dev.siea.duels.manager.DuelType;
-import dev.siea.duels.manager.Manager;
+import dev.siea.duels.game.DuelType;
+import dev.siea.duels.game.GameManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,10 +24,10 @@ public class GUIListener implements Listener {
         }
         Player target = openInventories.get(e.getInventory());
         if (target == null){
-            Manager.joinQue((Player) e.getWhoClicked(), duelType);
+            GameManager.joinQue((Player) e.getWhoClicked(), duelType);
         }
         else{
-            Manager.requestDuel((Player) e.getWhoClicked(), target, duelType);
+            GameManager.requestDuel((Player) e.getWhoClicked(), target, duelType);
         }
         e.getWhoClicked().closeInventory();
     }

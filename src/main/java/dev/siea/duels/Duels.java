@@ -2,6 +2,8 @@ package dev.siea.duels;
 
 import dev.siea.base.Base;
 import dev.siea.duels.commands.DuelCommand;
+import dev.siea.duels.creator.CreatorManager;
+import dev.siea.duels.game.GameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +17,8 @@ public final class Duels extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         Objects.requireNonNull(getCommand("duel")).setExecutor(new DuelCommand());
+        getServer().getPluginManager().registerEvents(new GameManager(), this);
+        getServer().getPluginManager().registerEvents(new CreatorManager(), this);
     }
 
     @Override

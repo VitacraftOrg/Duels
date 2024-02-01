@@ -1,6 +1,6 @@
 package dev.siea.duels.gui;
 
-import dev.siea.duels.manager.DuelType;
+import dev.siea.duels.game.DuelType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

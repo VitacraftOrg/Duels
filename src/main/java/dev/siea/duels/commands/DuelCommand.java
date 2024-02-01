@@ -2,8 +2,9 @@ package dev.siea.duels.commands;
 
 import dev.siea.base.api.messenger.Messenger;
 import dev.siea.base.api.messenger.NotificationReason;
+import dev.siea.duels.creator.CreatorManager;
 import dev.siea.duels.gui.DuelSelection;
-import dev.siea.duels.manager.DuelType;
+import dev.siea.duels.game.DuelType;
 import dev.siea.duels.utils.getPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,6 +27,9 @@ public class DuelCommand implements CommandExecutor {
                 Messenger.sendMessage(((Player) sender),duelType.getDisplayName() + " §7- " + duelType.getDescription(), NotificationReason.SOFT_WARNING);
             }
             return true;
+        }
+        if (subcommand.equalsIgnoreCase("create")){
+            CreatorManager.newCreation((Player) sender);
         }
         Player player = (Player) sender;
         if (args.length == 2){

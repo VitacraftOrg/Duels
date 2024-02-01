@@ -1,20 +1,26 @@
-package dev.siea.duels.manager;
+package dev.siea.duels.game;
 
 import dev.siea.base.api.messenger.Messenger;
 import dev.siea.base.api.messenger.NotificationReason;
 import dev.siea.duels.Duels;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-public class Manager {
+public class GameManager implements Listener {
     private static final List<DuelSession> activeDuels = new ArrayList<>();
     private static final List<DuelRequest> duelRequests = new ArrayList<>();
-
     private static final HashMap<Player, DuelType> duelQue = new HashMap<>();
 
-    public Manager(){
+    private static final Location spawn = null;
+
+
+    public GameManager(){
         for (DuelRequest duelRequest : duelRequests){
             if (duelRequest.isExpired()) duelRequest.expired();
         }
@@ -101,9 +107,6 @@ public class Manager {
     /*
         These methods manage the stop and handling of Duel sessions
     */
-    private static void stopDuel(DuelSession duelSession){
-        duelSession.stop();
-    }
 
     /*
         These methods manage events during the Duels
@@ -111,7 +114,15 @@ public class Manager {
     public static void playerDied(Player player){
         DuelSession duelSession = findDuelSession(player);
         if (duelSession == null) return;
-        stopDuel(duelSession);
+        duelSession.playerDied(player);
+    }
+
+    /*
+        Everything Spawning related
+    */
+
+    public static void joinLobby(Player player) {
+        player.teleport(spawn);
     }
 
     /*
@@ -140,5 +151,20 @@ public class Manager {
             if (duelSession.getPlayers().contains(player)) return duelSession;
         }
         return null;
+    }
+
+    /*
+       Listeners
+     */
+    @EventHandler
+    public static void onEntityDamage(EntityDamageEvent e){
+        try{
+            Player player = (Player) e.getEntity();
+            if (!(player.getHealth() - e.getDamage() <= 0)) return;
+            for (DuelSession session : activeDuels){
+                if (session.getPlayers().contains(player)) session.playerDied(player);
+            }
+        } catch (Exception ignore){
+        }
     }
 }

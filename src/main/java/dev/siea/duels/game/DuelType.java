@@ -1,4 +1,4 @@
-package dev.siea.duels.manager;
+package dev.siea.duels.game;
 
 import org.bukkit.Material;
 

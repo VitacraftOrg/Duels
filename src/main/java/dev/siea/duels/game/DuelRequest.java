@@ -1,4 +1,4 @@
-package dev.siea.duels.manager;
+package dev.siea.duels.game;
 
 import dev.siea.base.api.messenger.NotificationReason;
 import org.bukkit.entity.Player;
@@ -38,18 +38,18 @@ public class DuelRequest {
     public void deny(){
         Messenger.sendMessage(initiator, "§c" + recipient.getDisplayName() + "§c denied your Duel request", NotificationReason.SOFT_WARNING);
         Messenger.sendMessage(recipient, "§cYou denied a Duel request by " + initiator.getDisplayName(), NotificationReason.SOFT_WARNING);
-        Manager.removeDuelRequest(this);
+        GameManager.removeDuelRequest(this);
     }
 
     public void accept(){
         Messenger.sendMessage(initiator, "§a" + recipient.getDisplayName() + "§a accepted your Duel request", NotificationReason.SOFT_WARNING);
         Messenger.sendMessage(recipient, "§aYou accepted a Duel request by " + initiator.getDisplayName(), NotificationReason.SOFT_WARNING);
-        Manager.removeDuelRequest(this);
-        Manager.startDuel(this);
+        GameManager.removeDuelRequest(this);
+        GameManager.startDuel(this);
     }
 
     public void expired(){
         Messenger.sendMessage(initiator, "§cYour Duel request to " + recipient.getName() + " expired", NotificationReason.SOFT_WARNING);
-        Manager.removeDuelRequest(this);
+        GameManager.removeDuelRequest(this);
     }
 }
