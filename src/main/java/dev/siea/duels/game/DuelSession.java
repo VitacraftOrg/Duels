@@ -3,7 +3,12 @@ package dev.siea.duels.game;
 import dev.siea.base.api.messenger.MessageType;
 import dev.siea.base.api.messenger.Messenger;
 import dev.siea.base.api.messenger.NotificationReason;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +17,8 @@ public class DuelSession {
     private final List<Player> players;
     private final List<Player> alivePlayers;
     private final DuelType type;
+
+    private final List<Block> playerBlocks = new ArrayList<>();
 
     private final DuelMap map;
 
@@ -41,23 +48,11 @@ public class DuelSession {
         return gameState;
     }
 
-    public void playerDied(Player player){
-        if (gameState == GameState.PLAYING){
-            alivePlayers.remove(player);
-            Messenger.sendMessage(player, "§You died!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
-            if (alivePlayers.size() <= 1){
-                stop();
-            }
-        }
-        else if (gameState == GameState.STARTING){
-            alivePlayers.remove(player);
-            if (alivePlayers.size() <= 1){
-                cancel("§cThe Game was canceled because 1 or more players disconnected!");
-            }
-        }
+    public DuelMap getMap(){
+        return map;
     }
 
-    public void initializeGame(){
+    private void initializeGame(){
         gameState = GameState.STARTING;
 
         if (map == null){
@@ -75,6 +70,12 @@ public class DuelSession {
         player1.teleport(map.getSpawn1());
         player2.teleport(map.getSpawn2());
 
+        for (Player player : players){
+            player.getInventory().setContents(map.getItems().getContents());
+            player.setHealth(20);
+            player.setSaturation(20);
+            player.setGameMode(GameMode.SURVIVAL);
+        }
         start();
     }
 
@@ -100,6 +101,10 @@ public class DuelSession {
             } catch (Exception ignore){
             }
         }
+        for (Block block : playerBlocks){
+            block.setType(Material.AIR);
+        }
+        GameManager.stopDuel(this);
     }
 
     private void stop(){
@@ -108,5 +113,32 @@ public class DuelSession {
             Messenger.sendMessage(player, "You won!", NotificationReason.AWARD, MessageType.TITLE);
         }
         kill();
+    }
+
+    public void playerDied(Player player){
+        if (gameState == GameState.PLAYING){
+            alivePlayers.remove(player);
+            Messenger.sendMessage(player, "§You died!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
+            if (alivePlayers.size() <= 1){
+                stop();
+            }
+        }
+        else if (gameState == GameState.STARTING){
+            alivePlayers.remove(player);
+            if (alivePlayers.size() <= 1){
+                cancel("§cThe Game was canceled because 1 or more players disconnected!");
+            }
+        }
+    }
+
+    public void blockPlaced(BlockPlaceEvent e){
+        playerBlocks.add(e.getBlock());
+    }
+
+    public void blockBroken(BlockBreakEvent e){
+        if (playerBlocks.contains(e.getBlock())) return;
+        else{
+            e.setCancelled(true);
+        }
     }
 }

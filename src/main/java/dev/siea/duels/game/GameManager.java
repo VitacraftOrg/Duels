@@ -3,11 +3,15 @@ package dev.siea.duels.game;
 import dev.siea.base.api.messenger.Messenger;
 import dev.siea.base.api.messenger.NotificationReason;
 import dev.siea.duels.Duels;
+import dev.siea.duels.utils.ConfigUtil;
 import dev.siea.duels.utils.MapConfig;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -17,10 +21,9 @@ public class GameManager implements Listener {
     private static final List<DuelSession> activeDuels = new ArrayList<>();
     private static final List<DuelRequest> duelRequests = new ArrayList<>();
     private static final HashMap<Player, DuelType> duelQue = new HashMap<>();
-
     private static final HashMap<DuelMap, Boolean> duelMaps = new HashMap<>();
 
-    private static final Location spawn = null;
+    private static Location spawn = reloadSpawn();
 
 
     public GameManager(){
@@ -33,6 +36,20 @@ public class GameManager implements Listener {
             }
         }.runTaskTimer(Duels.getPlugin(), 1L, 1L);
     }
+
+
+    /*
+        Everything Spawning related
+    */
+
+    public static void joinLobby(Player player) {
+        player.teleport(spawn);
+        player.setSaturation(10);
+        player.setHealth(20);
+        player.setGameMode(GameMode.SURVIVAL);
+        player.getInventory().clear();
+    }
+
 
     /*
         These are que related methods handling matchmaking
@@ -111,6 +128,11 @@ public class GameManager implements Listener {
         These methods manage the stop and handling of Duel sessions
     */
 
+    public static void stopDuel(DuelSession session) {
+        activeDuels.remove(session);
+        duelMaps.put(session.getMap(), false);
+    }
+
     private static void purgeDuelSessions(){
         for (DuelSession duelSession : activeDuels){
             duelSession.cancel("§cDuel canceled due to administrative reasons.");
@@ -126,13 +148,6 @@ public class GameManager implements Listener {
         duelSession.playerDied(player);
     }
 
-    /*
-        Everything Spawning related
-    */
-
-    public static void joinLobby(Player player) {
-        player.teleport(spawn);
-    }
 
     /*
         Util Methods
@@ -163,17 +178,31 @@ public class GameManager implements Listener {
     }
 
     private static DuelMap findMap(DuelType type){
+        DuelMap foundDuelMap;
+        for (DuelMap duelMap : duelMaps.keySet()){
+            if (duelMaps.get(duelMap)) continue;
+            if (duelMap.getType() == type) {
+                foundDuelMap = duelMap;
+                duelMaps.put(foundDuelMap, true);
+                return foundDuelMap;
+            }
+            break;
+        }
         return null;
     }
 
     public static void reloadDuelMaps(){
         List<DuelMap> duelMapsList = MapConfig.getAllMaps();
-        assert duelMapsList != null;
         purgeDuelSessions();
         duelMaps.clear();
         for (DuelMap map : duelMapsList){
             duelMaps.put(map, false);
         }
+    }
+
+    public static Location reloadSpawn() {
+        ConfigUtil config = new ConfigUtil(Duels.getPlugin(),"locations.yml");
+        return config.getConfig().getLocation("spawn");
     }
 
     public static void onDisable(){
@@ -192,6 +221,20 @@ public class GameManager implements Listener {
                 if (session.getPlayers().contains(player)) session.playerDied(player);
             }
         } catch (Exception ignore){
+        }
+    }
+
+    @EventHandler
+    public static void onBlockBreak(BlockBreakEvent e){
+        for (DuelSession session : activeDuels){
+            if (session.getPlayers().contains(e.getPlayer())) session.blockBroken(e);
+        }
+    }
+
+    @EventHandler
+    public static void onBlockBreak(BlockPlaceEvent e){
+        for (DuelSession session : activeDuels){
+            if (session.getPlayers().contains(e.getPlayer())) session.blockPlaced(e);
         }
     }
 }

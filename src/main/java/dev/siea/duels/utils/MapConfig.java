@@ -54,7 +54,7 @@ public class MapConfig {
             DuelType type = DuelType.valueOf(c.getString("type"));
             Inventory items;
             try {
-                items = InventoryBase64DeSerializer.fromBase64( c.getString("items"));
+                items = InventoryBase64DeSerializer.fromBase64(c.getString("items"));
             } catch (IOException e) {
                 items = Bukkit.createInventory(null, 3*9);
             }

@@ -2,3 +2,7 @@ name: Duels
 version: '${project.version}'
 main: dev.siea.duels.Duels
 api-version: '1.20'
+commands:
+  duel:
+    description: "Start duels"
+    usage: §c/duel <player>

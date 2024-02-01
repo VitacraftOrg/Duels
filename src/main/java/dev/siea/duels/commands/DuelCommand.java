@@ -30,6 +30,7 @@ public class DuelCommand implements CommandExecutor {
         }
         if (subcommand.equalsIgnoreCase("create")){
             CreatorManager.newCreation((Player) sender);
+            return true;
         }
         Player player = (Player) sender;
         if (args.length == 2){

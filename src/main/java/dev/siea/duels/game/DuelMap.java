@@ -2,6 +2,7 @@ package dev.siea.duels.game;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class DuelMap {
     private final DuelType type;
@@ -44,5 +45,9 @@ public class DuelMap {
 
     public Location getCorner2() {
         return corner2;
+    }
+
+    public Inventory getItems() {
+        return items;
     }
 }
