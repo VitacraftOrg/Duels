@@ -86,9 +86,8 @@ public class DuelSession {
     }
 
     public void start(){
-
         for (Player player : players){
-            Messenger.sendMessage(player, "§cStart!", NotificationReason.SOFT_WARNING, MessageType.ACTIONBAR);
+            Messenger.sendMessage(player, "§cStart!", NotificationReason.SOFT_WARNING, MessageType.CHAT_MESSAGE);
         }
         gameState = GameState.PLAYING;
     }
@@ -120,7 +119,7 @@ public class DuelSession {
     private void stop(){
         gameState = GameState.STOPPING;
         for (Player player : alivePlayers){
-            Messenger.sendMessage(player, "You won!", NotificationReason.AWARD, MessageType.TITLE);
+            Messenger.sendMessage(player, "§aYou won!", NotificationReason.AWARD, MessageType.TITLE);
         }
         kill();
     }
@@ -128,7 +127,7 @@ public class DuelSession {
     public void playerDied(Player player){
         if (gameState == GameState.PLAYING){
             alivePlayers.remove(player);
-            Messenger.sendMessage(player, "§You died!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
+            Messenger.sendMessage(player, "§cYou died!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
             for (Player loopplayer: alivePlayers){
                 Messenger.sendMessage(loopplayer, "§c" + player.getName() + " died.", NotificationReason.SOFT_WARNING, MessageType.CHAT_MESSAGE);
             }
