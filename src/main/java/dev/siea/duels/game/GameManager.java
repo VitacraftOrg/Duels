@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -219,7 +220,9 @@ public class GameManager implements Listener {
             if (!(player.getHealth() - e.getDamage() <= 0)) return;
             for (DuelSession session : activeDuels){
                 if (session.getPlayers().contains(player)) session.playerDied(player);
+                return;
             }
+            e.setCancelled(true);
         } catch (Exception ignore){
         }
     }
@@ -228,13 +231,26 @@ public class GameManager implements Listener {
     public static void onBlockBreak(BlockBreakEvent e){
         for (DuelSession session : activeDuels){
             if (session.getPlayers().contains(e.getPlayer())) session.blockBroken(e);
+            return;
         }
+        e.setCancelled(true);
     }
 
     @EventHandler
     public static void onBlockBreak(BlockPlaceEvent e){
         for (DuelSession session : activeDuels){
             if (session.getPlayers().contains(e.getPlayer())) session.blockPlaced(e);
+            return;
         }
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public static void onFoodLevelChange(FoodLevelChangeEvent e){
+        for (DuelSession session : activeDuels){
+            if (session.getPlayers().contains((Player) e.getEntity())) session.foodLevelChange(e);
+            return;
+        }
+        e.setCancelled(true);
     }
 }

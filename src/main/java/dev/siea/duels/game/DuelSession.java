@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,5 +141,9 @@ public class DuelSession {
         else{
             e.setCancelled(true);
         }
+    }
+
+    public void foodLevelChange(FoodLevelChangeEvent e) {
+        e.setCancelled(true);
     }
 }
