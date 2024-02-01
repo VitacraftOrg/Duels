@@ -23,7 +23,7 @@ public final class Duels extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        GameManager.onDisable();
     }
 
     public static Base getBase(){

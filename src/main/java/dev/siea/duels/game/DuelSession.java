@@ -13,17 +13,20 @@ public class DuelSession {
     private final List<Player> alivePlayers;
     private final DuelType type;
 
+    private final DuelMap map;
+
     private GameState gameState = GameState.WAITING;
 
-    public DuelSession(Player player1, Player player2, DuelType type){
+    public DuelSession(Player player1, Player player2, DuelType type, DuelMap map){
         List<Player> players = new ArrayList<>();
         players.add(player1);
         players.add(player2);
         this.players = players;
         this.type = type;
+        this.map = map;
         alivePlayers = players;
         gameState = GameState.STARTING;
-        start();
+        initializeGame();
     }
 
     public List<Player> getPlayers(){
@@ -54,12 +57,28 @@ public class DuelSession {
         }
     }
 
+    public void initializeGame(){
+        gameState = GameState.STARTING;
+
+        if (map == null){
+            cancel("§cNo Lobby found.");
+            return;
+        }
+        if (players.size() < 2){
+            cancel("§cNot enough players.");
+            return;
+        }
+
+        Player player1 = players.get(0);
+        Player player2 = players.get(1);
+
+        player1.teleport(map.getSpawn1());
+        player2.teleport(map.getSpawn2());
+
+        start();
+    }
+
     public void start(){
-
-
-
-
-
         gameState = GameState.PLAYING;
     }
 

@@ -1,17 +1,20 @@
 package dev.siea.duels.game;
 
 import org.bukkit.Location;
+import org.bukkit.inventory.Inventory;
 
 public class DuelMap {
     private final DuelType type;
+    private final Inventory items;
     private final Location spawn1;
     private final Location spawn2;
     private final Location vertex;
     private final Location vertex2;
     private final Location corner2;
 
-    public DuelMap(DuelType type, Location spawn1, Location spawn2, Location vertex, Location vertex2, Location corner2) {
+    public DuelMap(DuelType type, Inventory items, Location spawn1, Location spawn2, Location vertex, Location vertex2, Location corner2) {
         this.type = type;
+        this.items = items;
         this.spawn1 = spawn1;
         this.spawn2 = spawn2;
         this.vertex = vertex;
