@@ -16,7 +16,7 @@ public class DuelRequest {
         this.initiator = initiator;
         this.recipient = recipient;
         this.type = type;
-        Messenger.sendMessage(recipient, initiator.getDisplayName() + "§e challenged you in " + type.getDisplayName(), NotificationReason.SOFT_WARNING);
+        Messenger.send(recipient, initiator.getDisplayName() + "§e challenged you in " + type.getDisplayName(), NotificationReason.IN_GAME);
     }
 
     public Player getInitiator() {
@@ -36,20 +36,20 @@ public class DuelRequest {
     }
 
     public void deny(){
-        Messenger.sendMessage(initiator, "§c" + recipient.getDisplayName() + "§c denied your Duel request", NotificationReason.SOFT_WARNING);
-        Messenger.sendMessage(recipient, "§cYou denied a Duel request by " + initiator.getDisplayName(), NotificationReason.SOFT_WARNING);
+        Messenger.send(initiator, "§c" + recipient.getDisplayName() + "§c denied your Duel request", NotificationReason.IN_GAME);
+        Messenger.send(recipient, "§cYou denied a Duel request by " + initiator.getDisplayName(), NotificationReason.IN_GAME);
         GameManager.removeDuelRequest(this);
     }
 
     public void accept(){
-        Messenger.sendMessage(initiator, "§a" + recipient.getDisplayName() + "§a accepted your Duel request", NotificationReason.SOFT_WARNING);
-        Messenger.sendMessage(recipient, "§aYou accepted a Duel request by " + initiator.getDisplayName(), NotificationReason.SOFT_WARNING);
+        Messenger.send(initiator, "§a" + recipient.getDisplayName() + "§a accepted your Duel request", NotificationReason.IN_GAME);
+        Messenger.send(recipient, "§aYou accepted a Duel request by " + initiator.getDisplayName(), NotificationReason.IN_GAME);
         GameManager.removeDuelRequest(this);
         GameManager.startDuel(this);
     }
 
     public void expired(){
-        Messenger.sendMessage(initiator, "§cYour Duel request to " + recipient.getName() + " expired", NotificationReason.SOFT_WARNING);
+        Messenger.send(initiator, "§cYour Duel request to " + recipient.getName() + " expired", NotificationReason.IN_GAME);
         GameManager.removeDuelRequest(this);
     }
 }

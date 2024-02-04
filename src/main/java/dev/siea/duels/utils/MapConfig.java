@@ -4,12 +4,9 @@ import dev.siea.duels.Duels;
 import dev.siea.duels.creator.Creation;
 import dev.siea.duels.game.DuelMap;
 import dev.siea.duels.game.DuelType;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.io.*;
 import java.util.*;
@@ -42,9 +39,9 @@ public class MapConfig {
         config.save();
     }
 
-    public static void removeMap(String id){
+    public static void removeMap(int id){
         ConfigUtil config = new ConfigUtil(Duels.getPlugin(),file);
-        config.getConfig().set(id, null);
+        config.getConfig().set(String.valueOf(id), null);
         config.save();
     }
 

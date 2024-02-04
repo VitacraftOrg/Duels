@@ -28,26 +28,30 @@ public class DuelCommand implements CommandExecutor {
         String subcommand = args[0];
         if (subcommand.equalsIgnoreCase("list")){
             for (DuelType duelType : DuelType.values()){
-                Messenger.sendMessage(((Player) sender),duelType.getDisplayName() + " §7- " + duelType.getDescription(), NotificationReason.SOFT_WARNING);
+                Messenger.send(((Player) sender),duelType.getDisplayName() + " §7- " + duelType.getDescription(), NotificationReason.IN_GAME);
             }
             return true;
         }
-        if (subcommand.equalsIgnoreCase("spawn")){
+        if (subcommand.equalsIgnoreCase("spawn") && sender.hasPermission("duels.admin")){
             ConfigUtil config = new ConfigUtil(Duels.getPlugin(),"locations.yml");
             config.getConfig().set("spawn", ((Player) sender).getLocation());
             config.save();
-            Messenger.sendMessage(((Player) sender),"§eYou successfully set the Duels spawn", NotificationReason.ADMINISTRATIVE);
+            Messenger.send(((Player) sender),"§eYou successfully set the Duels spawn.", NotificationReason.ADMINISTRATIVE);
             return true;
         }
-        if (subcommand.equalsIgnoreCase("create")){
+        if (subcommand.equalsIgnoreCase("create") && sender.hasPermission("duels.admin")){
             CreatorManager.newCreation((Player) sender);
             return true;
         }
         Player player = (Player) sender;
-        if (args.length == 2){
+        if (args.length == 1){
             Player target = getPlayer.onlineFromUsername(args[0]);
             if (target == null){
-                Messenger.sendMessage(((Player) sender),"This Player does not exist", NotificationReason.HARD_WARNING);
+                Messenger.send(((Player) sender),"§cThis Player does not exist!", NotificationReason.HARD_WARNING);
+                return true;
+            }
+            if (target == player){
+                Messenger.send(((Player) sender),"§cYou can not duel yourself!", NotificationReason.HARD_WARNING);
                 return true;
             }
             player.openInventory(DuelSelection.getInventory(target));

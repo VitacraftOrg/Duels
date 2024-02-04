@@ -21,7 +21,7 @@ public class CreatorManager implements Listener {
 
     public static void newCreation(Player player) {
         if (activeCreations.containsKey(player)){
-            Messenger.sendMessage(player, "§cYou are already creating a Duel Map" , NotificationReason.HARD_WARNING);
+            Messenger.send(player, "§cYou are already creating a Duel Map" , NotificationReason.HARD_WARNING);
             return;
         }
         activeCreations.put(player, new Creation(player));
@@ -30,7 +30,7 @@ public class CreatorManager implements Listener {
     public static void finishCreation(Creation creation, Player player){
         activeCreations.remove(player);
         MapConfig.saveMap(creation);
-        Messenger.sendMessage(player, "§eSuccessfully created new Map", NotificationReason.ADMINISTRATIVE);
+        Messenger.send(player, "§eSuccessfully created new Map", NotificationReason.ADMINISTRATIVE);
     }
 
     public static void cancelCreation(Creation creation, Player player){

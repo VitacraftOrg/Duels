@@ -69,8 +69,8 @@
         </dependency>
         <dependency>
             <groupId>dev.siea</groupId>
-            <artifactId>Base</artifactId>
-            <version>1.0</version>
+            <artifactId>vitacraftapi</artifactId>
+            <version>prod-1.0-20240204_1223</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -2,8 +2,14 @@ name: Duels
 version: '${project.version}'
 main: dev.siea.duels.Duels
 api-version: '1.20'
-depend: [Base]
+depend: [VitacraftAPI]
+load: POSTWORLD
 commands:
   duel:
-    description: "Start duels"
+    description: "Start a duel"
     usage: §c/duel <player>
+permissions:
+  duels:
+    children:
+      admin:
+        description: Create and manage duels

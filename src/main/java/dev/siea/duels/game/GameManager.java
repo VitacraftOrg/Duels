@@ -7,6 +7,7 @@ import dev.siea.duels.utils.ConfigUtil;
 import dev.siea.duels.utils.MapConfig;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -45,8 +49,10 @@ public class GameManager implements Listener {
 
     public static void joinLobby(Player player) {
         player.teleport(spawn);
+        player.setArrowsInBody(0);
         player.setSaturation(10);
         player.setHealth(20);
+        player.getActivePotionEffects().clear();
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().clear();
     }
@@ -57,7 +63,7 @@ public class GameManager implements Listener {
      */
     public static void joinQue(Player player, DuelType type){
         removeFromOtherQues(player);
-        Messenger.sendMessage(player, "§eJoining que in : " + type.getDisplayName(), NotificationReason.SOFT_WARNING);
+        Messenger.send(player, "§eJoining que in : " + type.getDisplayName(), NotificationReason.SOFT_WARNING);
         duelQue.put(player,type);
         matchMake();
     }
@@ -100,7 +106,7 @@ public class GameManager implements Listener {
     public static void requestDuel(Player player1, Player player2, DuelType type){
         for (DuelRequest duelRequest : duelRequests){
             if (duelRequest.getInitiator() == player1){
-                Messenger.sendMessage(player1, "§cYou already have an outgoing Duel request", NotificationReason.SOFT_WARNING);
+                Messenger.send(player1, "§cYou already have an outgoing Duel request", NotificationReason.SOFT_WARNING);
                 return;
             }
         }
@@ -215,33 +221,23 @@ public class GameManager implements Listener {
      */
     @EventHandler
     public static void onEntityDamage(EntityDamageEvent e){
-        try{
-            Player player = (Player) e.getEntity();
-            DuelSession duelSession = null;
-            for (DuelSession session : activeDuels){
-                if (session.getPlayers().contains(player)) {
-                    duelSession = session;
-                    break;
-                }
+        for (DuelSession session : activeDuels){
+            if (session.getPlayers().contains((Player) e.getEntity())) {
+                session.onPlayerDamage(e);
+                return;
             }
-            if (duelSession != null){
-                if (!(player.getHealth() - e.getDamage() <= 0)) return;
-                e.setCancelled(true);
-                duelSession.playerDied(player);
-            }
-            else {
-                e.setCancelled(true);
-            }
-        } catch (Exception ignore){
         }
+        e.setCancelled(true);
     }
 
     @EventHandler
     public static void onBlockBreak(BlockBreakEvent e){
         if (e.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         for (DuelSession session : activeDuels){
-            if (session.getPlayers().contains(e.getPlayer())) session.blockBroken(e);
-            return;
+            if (session.getPlayers().contains(e.getPlayer())) {
+                session.blockBroken(e);
+                return;
+            }
         }
         e.setCancelled(true);
     }
@@ -250,8 +246,10 @@ public class GameManager implements Listener {
     public static void onBlockBreak(BlockPlaceEvent e){
         if (e.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         for (DuelSession session : activeDuels){
-            if (session.getPlayers().contains(e.getPlayer())) session.blockPlaced(e);
-            return;
+            if (session.getPlayers().contains(e.getPlayer())) {
+                session.blockPlaced(e);
+                return;
+            }
         }
         e.setCancelled(true);
     }
@@ -259,9 +257,38 @@ public class GameManager implements Listener {
     @EventHandler
     public static void onFoodLevelChange(FoodLevelChangeEvent e){
         for (DuelSession session : activeDuels){
-            if (session.getPlayers().contains((Player) e.getEntity())) session.foodLevelChange(e);
-            return;
+            if (session.getPlayers().contains((Player) e.getEntity())) {
+                session.foodLevelChange(e);
+                return;
+            }
         }
         e.setCancelled(true);
+    }
+
+    @EventHandler
+    public static void onProjectileLaunchEvent(ProjectileLaunchEvent e){
+        for (DuelSession session : activeDuels){
+            if (session.getPlayers().contains((Player) e.getEntity())) {
+                session.projectileFired(e);
+                return;
+            }
+        }
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public static void projectileHitEvent(ProjectileHitEvent e){
+        if (!(e.getEntity() instanceof Arrow)) return;
+        if (e.getHitBlock() != null) e.getEntity().remove();
+    }
+
+    @EventHandler
+    public static void playerMoved(PlayerMoveEvent e){
+        for (DuelSession session : activeDuels){
+            if (session.getPlayers().contains(e.getPlayer())) {
+                session.playerMoved(e);
+                return;
+            }
+        }
     }
 }

@@ -33,12 +33,12 @@ public class DuelSelection {
     }
 
     public static Inventory getInventory(Player player){
-        Inventory inventory = Bukkit.createInventory(null, 9*3, "Select a Duel to play against : " + player.getName());
+        Inventory inventory = Bukkit.createInventory(null, 9*3, "Playing against - " + player.getName());
         ItemStack background = createItem("§a", Material.BLACK_STAINED_GLASS_PANE);
         for (int i = 0; i < 9*3; i++) {
             inventory.setItem(i, background);
         }
-        int[] slots = {11,12,23,14,15};
+        int[] slots = {11,12,13,14,15};
         DuelType[] duelTypes = DuelType.values();
 
         for (int i = 0; i < Math.min(slots.length, duelTypes.length); i++) {

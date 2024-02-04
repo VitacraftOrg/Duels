@@ -39,7 +39,7 @@ public class Creation {
                 handleBack();
                 break;
             case "cancel":
-                Messenger.sendMessage(player, "§cYou canceled the creation.", NotificationReason.ADMINISTRATIVE);
+                Messenger.send(player, "§cYou canceled the creation.", NotificationReason.ADMINISTRATIVE);
                 CreatorManager.cancelCreation(this, player);
                 break;
             default:
@@ -67,10 +67,10 @@ public class Creation {
                     type = DuelType.UHC;
                     break;
                 default:
-                    Messenger.sendMessage(player, "§c\"" + string.toUpperCase() + "\" is not a valid Duel type. Valid types are: " + Arrays.toString(DuelType.values()).replace("[", "").replace("]",""), NotificationReason.HARD_WARNING);
+                    Messenger.send(player, "§c\"" + string.toUpperCase() + "\" is not a valid Duel type. Valid types are: " + Arrays.toString(DuelType.values()).replace("[", "").replace("]",""), NotificationReason.HARD_WARNING);
                     return;
             }
-            Messenger.sendMessage(player, "§eYou successfully set the Duel type to " + type.getDisplayName(), NotificationReason.ADMINISTRATIVE);
+            Messenger.send(player, "§eYou successfully set the Duel type to " + type.getDisplayName(), NotificationReason.ADMINISTRATIVE);
             next();
         }
     }
@@ -78,7 +78,7 @@ public class Creation {
     private void handleDone(){
         switch (creationState){
             case TYPE:
-                Messenger.sendMessage(player, "§c" + "\"DONE\"" + " is not a valid Duel type. Valid types are: " + Arrays.toString(DuelType.values()).replace("[", "").replace("]",""), NotificationReason.HARD_WARNING);
+                Messenger.send(player, "§c" + "\"DONE\"" + " is not a valid Duel type. Valid types are: " + Arrays.toString(DuelType.values()).replace("[", "").replace("]",""), NotificationReason.HARD_WARNING);
                 return;
             case ITEMS:
                 for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
@@ -136,7 +136,7 @@ public class Creation {
                 break;
         }
         String message = "§eMade a mistake? You went back to §6" + creationState.toString().replace("_" , " ");
-        Messenger.sendMessage(player, message, NotificationReason.ADMINISTRATIVE);
+        Messenger.send(player, message, NotificationReason.ADMINISTRATIVE);
         messageInstructions();
     }
     private void finish(){
@@ -197,7 +197,7 @@ public class Creation {
             default:
                 message = "§cA fetal error occurred";
         }
-        Messenger.sendMessage(player, message, NotificationReason.ADMINISTRATIVE);
+        Messenger.send(player, message, NotificationReason.ADMINISTRATIVE);
     }
 
     public DuelType getType() {

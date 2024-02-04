@@ -3,30 +3,40 @@ package dev.siea.duels.game;
 import dev.siea.base.api.messenger.MessageType;
 import dev.siea.base.api.messenger.Messenger;
 import dev.siea.base.api.messenger.NotificationReason;
+import dev.siea.duels.Duels;
+import dev.siea.duels.utils.CuboidRegion;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class DuelSession {
     private final List<Player> players;
-    private final List<Player> alivePlayers;
+    private final List<Player> alivePlayers = new ArrayList<>();
+
+    private final CuboidRegion region;
     private final DuelType type;
-
+    private int countdown = 61;
     private final List<Block> playerBlocks = new ArrayList<>();
-
     private final DuelMap map;
-
     private GameState gameState = GameState.WAITING;
+
+    private BukkitTask runnable;
+    private HashMap<Player, Integer> hits;
 
     public DuelSession(Player player1, Player player2, DuelType type, DuelMap map){
         List<Player> players = new ArrayList<>();
@@ -35,7 +45,8 @@ public class DuelSession {
         this.players = players;
         this.type = type;
         this.map = map;
-        alivePlayers = players;
+        region = new CuboidRegion(map.getVertex(), map.getVertex2());
+        alivePlayers.addAll(players);
         gameState = GameState.STARTING;
         initializeGame();
     }
@@ -82,12 +93,35 @@ public class DuelSession {
             player.setSaturation(20);
             player.setGameMode(GameMode.SURVIVAL);
         }
-        start();
+        runnable = new BukkitRunnable() {
+            public void run() {
+                countdown--;
+                if (countdown == 60){
+                    for (Player player : alivePlayers){
+                        Messenger.send(player,"§a3",NotificationReason.SOFT_WARNING,MessageType.TITLE);
+                    }
+                }
+                else if (countdown == 40){
+                    for (Player player : alivePlayers){
+                        Messenger.send(player,"§a2",NotificationReason.SOFT_WARNING,MessageType.TITLE);
+                    }
+                }
+                else if (countdown == 20){
+                    for (Player player : alivePlayers){
+                        Messenger.send(player,"§a1",NotificationReason.SOFT_WARNING,MessageType.TITLE);
+                    }
+                }
+                else if (countdown == 0){
+                    runnable.cancel();
+                    start();
+                }
+            }
+        }.runTaskTimer(Duels.getPlugin(), 1L, 1L);
     }
 
     public void start(){
         for (Player player : players){
-            Messenger.sendMessage(player, "§cStart!", NotificationReason.SOFT_WARNING, MessageType.CHAT_MESSAGE);
+            Messenger.send(player, "§cStart!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
         }
         gameState = GameState.PLAYING;
     }
@@ -96,7 +130,7 @@ public class DuelSession {
         gameState = GameState.STOPPING;
         if (reason != null){
             for (Player player : alivePlayers){
-                Messenger.sendMessage(player, reason, NotificationReason.SOFT_WARNING);
+                Messenger.send(player, reason, NotificationReason.SOFT_WARNING);
             }
         }
         kill();
@@ -107,9 +141,11 @@ public class DuelSession {
         for (Player player : players){
             try{
                 GameManager.joinLobby(player);
-            } catch (Exception ignore){
+            } catch (Exception e){
+                player.sendMessage("Couldnt teleport you to the lobby: " + e.getMessage());
             }
         }
+        System.out.println("Players: " + players);
         for (Block block : playerBlocks){
             block.setType(Material.AIR);
         }
@@ -119,17 +155,42 @@ public class DuelSession {
     private void stop(){
         gameState = GameState.STOPPING;
         for (Player player : alivePlayers){
-            Messenger.sendMessage(player, "§aYou won!", NotificationReason.AWARD, MessageType.TITLE);
+            Messenger.send(player, "§aYou won!", NotificationReason.AWARD, MessageType.TITLE);
         }
-        kill();
+
+        for (Player player : players){
+            player.setArrowsInBody(0);
+            player.setHealth(20);
+            player.getActivePotionEffects().clear();
+            player.getInventory().clear();
+            player.setSaturation(20);
+        }
+
+        countdown = 101;
+        runnable = new BukkitRunnable() {
+            public void run() {
+                countdown--;
+                for (Player player : alivePlayers){
+                    playWinningAnimation(player);
+                }
+                if (countdown == 0){
+                    runnable.cancel();
+                    kill();
+                }
+            }
+        }.runTaskTimer(Duels.getPlugin(), 1L, 1L);
+    }
+
+    private void playWinningAnimation(Player player){
+
     }
 
     public void playerDied(Player player){
         if (gameState == GameState.PLAYING){
             alivePlayers.remove(player);
-            Messenger.sendMessage(player, "§cYou died!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
+            Messenger.send(player, "§cYou died!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
             for (Player loopplayer: alivePlayers){
-                Messenger.sendMessage(loopplayer, "§c" + player.getName() + " died.", NotificationReason.SOFT_WARNING, MessageType.CHAT_MESSAGE);
+                Messenger.send(loopplayer, "§c" + player.getName() + " died.", NotificationReason.SOFT_WARNING, MessageType.CHAT_MESSAGE);
             }
             if (alivePlayers.size() <= 1){
                 stop();
@@ -143,18 +204,51 @@ public class DuelSession {
         }
     }
 
+    public void onPlayerDamage(EntityDamageEvent e){
+        if (gameState != GameState.PLAYING) {
+            e.setCancelled(true);
+            return;
+        }
+        if (type == DuelType.SUMO || type == DuelType.BOXING) e.setDamage(0);
+        if (type == DuelType.BOXING) {
+            hits.put((Player) e.getEntity(), hits.getOrDefault((Player) e.getEntity(), 0)+1);
+            if (hits.get((Player) e.getEntity()) > 99){
+                List<Player> deadPlayer = new ArrayList<>(alivePlayers);
+                deadPlayer.remove((Player) e.getEntity());
+                playerDied(deadPlayer.get(0));
+            }
+        }
+        if ((((Player) e.getEntity()).getHealth() - e.getDamage() <= 0)) {
+            playerDied((Player) e.getEntity());
+        }
+    }
+
     public void blockPlaced(BlockPlaceEvent e){
+        if (gameState != GameState.PLAYING) e.setCancelled(true);
         playerBlocks.add(e.getBlock());
     }
 
     public void blockBroken(BlockBreakEvent e){
+        if (gameState != GameState.PLAYING) e.setCancelled(true);
         if (playerBlocks.contains(e.getBlock())) return;
         else{
             e.setCancelled(true);
         }
     }
 
+    public void projectileFired(ProjectileLaunchEvent e){
+        if (gameState != GameState.PLAYING) e.setCancelled(true);
+    }
+
     public void foodLevelChange(FoodLevelChangeEvent e) {
-        e.setCancelled(true);
+        e.setCancelled(false);
+    }
+
+    public void playerMoved(PlayerMoveEvent e){
+        if (gameState != GameState.PLAYING && gameState != GameState.STOPPING) {
+            e.setCancelled(true);
+            return;
+        }
+        if (!region.contains(Objects.requireNonNull(e.getTo()))) playerDied(e.getPlayer());
     }
 }
