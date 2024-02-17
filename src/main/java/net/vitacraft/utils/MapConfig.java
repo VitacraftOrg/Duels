@@ -1,14 +1,13 @@
-package dev.siea.duels.utils;
+package net.vitacraft.utils;
 
-import dev.siea.duels.Duels;
-import dev.siea.duels.creator.Creation;
-import dev.siea.duels.game.DuelMap;
-import dev.siea.duels.game.DuelType;
+import net.vitacraft.Duels;
+import net.vitacraft.creator.Creation;
+import net.vitacraft.game.DuelMap;
+import net.vitacraft.game.DuelType;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.*;
 import java.util.*;
 
 public class MapConfig {

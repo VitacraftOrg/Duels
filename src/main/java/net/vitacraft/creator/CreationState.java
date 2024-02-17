@@ -1,4 +1,4 @@
-package dev.siea.duels.creator;
+package net.vitacraft.creator;
 
 public enum CreationState {
     TYPE,

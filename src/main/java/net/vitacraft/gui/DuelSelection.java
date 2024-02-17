@@ -1,6 +1,6 @@
-package dev.siea.duels.gui;
+package net.vitacraft.gui;
 
-import dev.siea.duels.game.DuelType;
+import net.vitacraft.game.DuelType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

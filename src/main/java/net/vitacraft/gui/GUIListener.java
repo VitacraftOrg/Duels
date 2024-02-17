@@ -1,7 +1,7 @@
-package dev.siea.duels.gui;
+package net.vitacraft.gui;
 
-import dev.siea.duels.game.DuelType;
-import dev.siea.duels.game.GameManager;
+import net.vitacraft.game.DuelType;
+import net.vitacraft.game.GameManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -1,13 +1,13 @@
-package dev.siea.duels.commands;
+package net.vitacraft.commands;
 
-import dev.siea.base.api.messenger.Messenger;
-import dev.siea.base.api.messenger.NotificationReason;
-import dev.siea.duels.Duels;
-import dev.siea.duels.creator.CreatorManager;
-import dev.siea.duels.gui.DuelSelection;
-import dev.siea.duels.game.DuelType;
-import dev.siea.duels.utils.ConfigUtil;
-import dev.siea.duels.utils.getPlayer;
+import net.vitacraft.api.messenger.Messenger;
+import net.vitacraft.api.messenger.NotificationReason;
+import net.vitacraft.Duels;
+import net.vitacraft.creator.CreatorManager;
+import net.vitacraft.gui.DuelSelection;
+import net.vitacraft.game.DuelType;
+import net.vitacraft.utils.ConfigUtil;
+import net.vitacraft.utils.getPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

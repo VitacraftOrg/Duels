@@ -1,6 +1,6 @@
 name: Duels
 version: '${project.version}'
-main: dev.siea.duels.Duels
+main: net.vitacraft.Duels
 api-version: '1.20'
 depend: [VitacraftAPI]
 load: POSTWORLD

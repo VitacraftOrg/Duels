@@ -1,4 +1,4 @@
-package dev.siea.duels.utils;
+package net.vitacraft.utils;
 
 import org.bukkit.Location;
 import org.bukkit.util.Vector;

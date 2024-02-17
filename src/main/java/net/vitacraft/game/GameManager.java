@@ -1,10 +1,10 @@
-package dev.siea.duels.game;
+package net.vitacraft.game;
 
-import dev.siea.base.api.messenger.Messenger;
-import dev.siea.base.api.messenger.NotificationReason;
-import dev.siea.duels.Duels;
-import dev.siea.duels.utils.ConfigUtil;
-import dev.siea.duels.utils.MapConfig;
+import net.vitacraft.api.messenger.Messenger;
+import net.vitacraft.api.messenger.NotificationReason;
+import net.vitacraft.Duels;
+import net.vitacraft.utils.ConfigUtil;
+import net.vitacraft.utils.MapConfig;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;

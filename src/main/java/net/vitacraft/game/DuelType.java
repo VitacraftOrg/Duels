@@ -1,4 +1,4 @@
-package dev.siea.duels.game;
+package net.vitacraft.game;
 
 import org.bukkit.Material;
 

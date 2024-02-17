@@ -1,6 +1,6 @@
-package dev.siea.duels.listeners;
+package net.vitacraft.listeners;
 
-import dev.siea.duels.game.GameManager;
+import net.vitacraft.game.GameManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

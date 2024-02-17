@@ -1,13 +1,11 @@
-package dev.siea.duels.creator;
+package net.vitacraft.creator;
 
-import dev.siea.base.api.messenger.Messenger;
-import dev.siea.base.api.messenger.NotificationReason;
-import dev.siea.duels.game.DuelType;
+import net.vitacraft.api.messenger.Messenger;
+import net.vitacraft.api.messenger.NotificationReason;
+import net.vitacraft.game.DuelType;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Arrays;
 import java.util.HashMap;

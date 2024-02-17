@@ -1,8 +1,8 @@
-package dev.siea.duels.game;
+package net.vitacraft.game;
 
-import dev.siea.base.api.messenger.NotificationReason;
+import net.vitacraft.api.messenger.Messenger;
+import net.vitacraft.api.messenger.NotificationReason;
 import org.bukkit.entity.Player;
-import dev.siea.base.api.messenger.Messenger;
 
 public class DuelRequest {
     private final Player initiator;

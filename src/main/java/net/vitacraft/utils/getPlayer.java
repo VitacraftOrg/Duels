@@ -1,4 +1,4 @@
-package dev.siea.duels.utils;
+package net.vitacraft.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

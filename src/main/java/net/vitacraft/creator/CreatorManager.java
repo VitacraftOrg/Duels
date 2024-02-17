@@ -1,18 +1,13 @@
-package dev.siea.duels.creator;
+package net.vitacraft.creator;
 
-import dev.siea.base.api.messenger.Messenger;
-import dev.siea.base.api.messenger.NotificationReason;
-import dev.siea.duels.game.DuelType;
-import dev.siea.duels.utils.MapConfig;
-import org.bukkit.Location;
+import net.vitacraft.api.messenger.Messenger;
+import net.vitacraft.api.messenger.NotificationReason;
+import net.vitacraft.utils.MapConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.inventory.Inventory;
-import org.checkerframework.checker.units.qual.C;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class CreatorManager implements Listener {

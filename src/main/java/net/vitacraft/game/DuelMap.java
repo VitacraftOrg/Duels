@@ -1,7 +1,6 @@
-package dev.siea.duels.game;
+package net.vitacraft.game;
 
 import org.bukkit.Location;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;

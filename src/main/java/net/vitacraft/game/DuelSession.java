@@ -1,11 +1,11 @@
-package dev.siea.duels.game;
+package net.vitacraft.game;
 
-import dev.siea.base.api.Finances;
-import dev.siea.base.api.messenger.MessageType;
-import dev.siea.base.api.messenger.Messenger;
-import dev.siea.base.api.messenger.NotificationReason;
-import dev.siea.duels.Duels;
-import dev.siea.duels.utils.CuboidRegion;
+import net.vitacraft.Duels;
+import net.vitacraft.api.messenger.MessageType;
+import net.vitacraft.api.messenger.Messenger;
+import net.vitacraft.api.messenger.NotificationReason;
+import net.vitacraft.api.storage.Finances;
+import net.vitacraft.utils.CuboidRegion;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -100,7 +100,7 @@ public class DuelSession {
                 countdown--;
                 if (countdown == 60){
                     for (Player player : alivePlayers){
-                        Messenger.send(player,"§a3",NotificationReason.SOFT_WARNING,MessageType.TITLE);
+                        Messenger.send(player,"§a3", NotificationReason.SOFT_WARNING, MessageType.TITLE);
                     }
                 }
                 else if (countdown == 40){

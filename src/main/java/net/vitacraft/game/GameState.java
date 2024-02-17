@@ -1,4 +1,4 @@
-package dev.siea.duels.game;
+package net.vitacraft.game;
 
 public enum GameState {
     WAITING,

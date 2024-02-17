@@ -1,12 +1,12 @@
-package dev.siea.duels;
+package net.vitacraft;
 
-import dev.siea.base.VitacraftAPI;
-import dev.siea.base.api.messenger.Messenger;
-import dev.siea.duels.commands.DuelCommand;
-import dev.siea.duels.creator.CreatorManager;
-import dev.siea.duels.game.GameManager;
-import dev.siea.duels.gui.GUIListener;
-import dev.siea.duels.listeners.PlayerConnectionListeners;
+import net.vitacraft.api.VitacraftAPI;
+import net.vitacraft.api.messenger.Messenger;
+import net.vitacraft.commands.DuelCommand;
+import net.vitacraft.creator.CreatorManager;
+import net.vitacraft.game.GameManager;
+import net.vitacraft.gui.GUIListener;
+import net.vitacraft.listeners.PlayerConnectionListeners;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,7 +23,7 @@ public final class Duels extends JavaPlugin {
         if (vitacraftplugin != null) {
             Messenger.log("Hooked into the VitacraftAPI, " + plugin.getDescription().getVersion() + "!");
             vitacraftapi = (VitacraftAPI) vitacraftplugin;
-        } else{
+        } else {
             getLogger().severe(String.format("[%s] - Disabled due to invalid VitacraftAPI connection!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
