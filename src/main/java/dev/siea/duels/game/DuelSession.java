@@ -1,5 +1,6 @@
 package dev.siea.duels.game;
 
+import dev.siea.base.api.Finances;
 import dev.siea.base.api.messenger.MessageType;
 import dev.siea.base.api.messenger.Messenger;
 import dev.siea.base.api.messenger.NotificationReason;
@@ -19,14 +20,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class DuelSession {
     private final List<Player> players;
     private final List<Player> alivePlayers = new ArrayList<>();
+
+    private final long duelStartTime = System.currentTimeMillis();
+
+    private long duelEndTime;
 
     private final CuboidRegion region;
     private final DuelType type;
@@ -154,8 +156,13 @@ public class DuelSession {
 
     private void stop(){
         gameState = GameState.STOPPING;
+        duelEndTime = System.currentTimeMillis();
+        int playTimeInSecs = (int) ((duelEndTime - duelStartTime) / 1000);
+        int reward = playTimeInSecs / 20;
         for (Player player : alivePlayers){
             Messenger.send(player, "§aYou won!", NotificationReason.AWARD, MessageType.TITLE);
+            Finances.addCoins(player, reward);
+            Messenger.send(player,"§eYou got " + reward + " coins for winning the duel.", NotificationReason.AWARD);
         }
 
         for (Player player : players){
