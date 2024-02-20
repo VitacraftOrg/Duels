@@ -6,6 +6,7 @@ import net.vitacraft.Duels;
 import net.vitacraft.creator.CreatorManager;
 import net.vitacraft.gui.DuelSelection;
 import net.vitacraft.game.DuelType;
+import net.vitacraft.gui.MapsMenu;
 import net.vitacraft.utils.ConfigUtil;
 import net.vitacraft.utils.getPlayer;
 import org.bukkit.command.Command;
@@ -41,6 +42,11 @@ public class DuelCommand implements CommandExecutor {
         }
         if (subcommand.equalsIgnoreCase("create") && sender.hasPermission("duels.admin")){
             CreatorManager.newCreation((Player) sender);
+            return true;
+        }
+        if (subcommand.equalsIgnoreCase("maps") && sender.hasPermission("duels.admin")){
+            Player player = (Player) sender;
+            player.openInventory(MapsMenu.getInventory());
             return true;
         }
         Player player = (Player) sender;

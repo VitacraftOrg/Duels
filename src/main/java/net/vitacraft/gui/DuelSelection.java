@@ -28,7 +28,7 @@ public class DuelSelection {
             ItemStack itemStack = createItem(duelType.getDisplayName(), duelType.getIcon(), duelType.getDescription());
             inventory.setItem(slot, itemStack);
         }
-        GUIListener.inventoryOpened(inventory, null);
+        GUIListener.duelSelectionOpened(inventory, null);
         return inventory;
     }
 
@@ -47,7 +47,7 @@ public class DuelSelection {
             ItemStack itemStack = createItem(duelType.getDisplayName(), duelType.getIcon());
             inventory.setItem(slot, itemStack);
         }
-        GUIListener.inventoryOpened(inventory, player);
+        GUIListener.duelSelectionOpened(inventory, player);
         return inventory;
     }
 
