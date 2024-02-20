@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -211,17 +212,17 @@ public class DuelSession {
         }
     }
 
-    public void onPlayerDamage(EntityDamageEvent e){
+    public void onPlayerDamage(EntityDamageByEntityEvent e){
         if (gameState != GameState.PLAYING) {
             e.setCancelled(true);
             return;
         }
         if (type == DuelType.SUMO || type == DuelType.BOXING) e.setDamage(0);
         if (type == DuelType.BOXING) {
-            hits.put((Player) e.getEntity(), hits.getOrDefault((Player) e.getEntity(), 0)+1);
-            if (hits.get((Player) e.getEntity()) > 99){
+            hits.put((Player) e.getDamager(), hits.getOrDefault((Player) e.getDamager(), 0)+1);
+            if (hits.get((Player) e.getDamager()) > 99){
                 List<Player> deadPlayer = new ArrayList<>(alivePlayers);
-                deadPlayer.remove((Player) e.getEntity());
+                deadPlayer.remove((Player) e.getDamager());
                 playerDied(deadPlayer.get(0));
             }
         }

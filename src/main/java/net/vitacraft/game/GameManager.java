@@ -13,10 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -41,7 +38,6 @@ public class GameManager implements Listener {
             }
         }.runTaskTimer(Duels.getPlugin(), 1L, 1L);
     }
-
 
     /*
         Everything Spawning related
@@ -224,7 +220,7 @@ public class GameManager implements Listener {
        Listeners
      */
     @EventHandler
-    public static void onEntityDamage(EntityDamageEvent e){
+    public static void onEntityDamage(EntityDamageByEntityEvent e){
         for (DuelSession session : activeDuels){
             if (session.getPlayers().contains((Player) e.getEntity())) {
                 session.onPlayerDamage(e);
