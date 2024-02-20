@@ -38,7 +38,7 @@ public class DuelSession {
     private GameState gameState = GameState.WAITING;
 
     private BukkitTask runnable;
-    private HashMap<Player, Integer> hits;
+    private final HashMap<Player, Integer> hits = new HashMap<>();
 
     public DuelSession(Player player1, Player player2, DuelType type, DuelMap map){
         List<Player> players = new ArrayList<>();

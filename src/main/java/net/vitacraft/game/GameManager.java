@@ -119,8 +119,13 @@ public class GameManager implements Listener {
     */
     public static void startDuel(Player player1, Player player2, DuelType type){
         removeFromOtherQues(player1, player2);
-
-        DuelSession session = new DuelSession(player1,player2,type, findMap(type));
+        DuelMap map = findMap(type);
+        if (map == null){
+            Messenger.send(player1, "§cUnable to find suitable map. Try a different GameMode");
+            Messenger.send(player2, "§cUnable to find suitable map. Try a different GameMode");
+            return;
+        }
+        DuelSession session = new DuelSession(player1,player2,type,map);
         activeDuels.add(session);
     }
 

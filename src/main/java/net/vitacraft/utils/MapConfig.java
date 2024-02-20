@@ -1,10 +1,12 @@
 package net.vitacraft.utils;
 
 import net.vitacraft.Duels;
+import net.vitacraft.api.messenger.Messenger;
 import net.vitacraft.creator.Creation;
 import net.vitacraft.game.DuelMap;
 import net.vitacraft.game.DuelType;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,8 +55,12 @@ public class MapConfig {
             assert c != null;
             DuelType type = DuelType.valueOf(c.getString("type"));
             HashMap<ItemStack, Integer> items = new HashMap<>();
-            for (String itemSection : Objects.requireNonNull(c.getConfigurationSection("items")).getKeys(false)){
-                items.put(Objects.requireNonNull(c.getConfigurationSection("items.")).getItemStack(itemSection), Integer.valueOf(itemSection));
+            try{
+                for (String itemSection : Objects.requireNonNull(c.getConfigurationSection("items")).getKeys(false)){
+                    items.put(Objects.requireNonNull(c.getConfigurationSection("items.")).getItemStack(itemSection), Integer.valueOf(itemSection));
+                }
+            } catch (NullPointerException e){
+                items.put(new ItemStack(Material.AIR,1), 1);
             }
             Location center = c.getLocation("center");
             Location spawn1 = c.getLocation("spawn1");
@@ -63,6 +69,7 @@ public class MapConfig {
             Location vertex2 = c.getLocation("vertex2");
             DuelMap map = new DuelMap(type,items,center,spawn1,spawn2,vertex1,vertex2);
             maps.add(map);
+            System.out.println(map.getType());
         }
         return maps;
     }
