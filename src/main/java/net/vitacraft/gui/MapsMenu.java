@@ -20,6 +20,11 @@ public class MapsMenu {
         for (int i = 0; i < 9; i++) {
             inventory.setItem(i, background);
         }
+
+        ItemStack reload = createItem("§aReload ♲", Material.REDSTONE_BLOCK);
+
+        inventory.setItem(4, reload);
+
         HashMap<DuelMap, Boolean> duelMaps = GameManager.getMaps();
         for (DuelMap map : duelMaps.keySet()){
             List<String> lore = new ArrayList<>();

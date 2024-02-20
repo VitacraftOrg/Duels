@@ -24,6 +24,10 @@ public class GUIListener implements Listener {
 
     private static void handleMapsMenu(InventoryClickEvent e) {
         e.setCancelled(true);
+        if (e.getSlot() == 4) {
+            GameManager.reloadDuelMaps();
+            e.getWhoClicked().openInventory(MapsMenu.getInventory());
+        }
     }
 
     private static void handleDuelSelection(InventoryClickEvent e){
