@@ -296,4 +296,8 @@ public class GameManager implements Listener {
             }
         }
     }
+
+    public static HashMap<DuelMap, Boolean> getMaps() {
+        return duelMaps;
+    }
 }

@@ -8,14 +8,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GUIListener implements Listener {
-    private static final HashMap<Inventory, Player> openInventories = new HashMap<>();
+    private static final HashMap<Inventory, Player> duelSelection = new HashMap<>();
+    private static final List<Inventory> mapMenus = new ArrayList<>();
 
     @EventHandler
     public static void onInventoryClick(InventoryClickEvent e){
-        if (!openInventories.containsKey(e.getInventory())) return;
+        if (duelSelection.containsKey(e.getInventory())) handleDuelSelection(e);
+        if (mapMenus.contains(e.getInventory())) handleMapsMenu(e);
+    }
+
+    private static void handleMapsMenu(InventoryClickEvent e) {
+        e.setCancelled(true);
+    }
+
+    private static void handleDuelSelection(InventoryClickEvent e){
         e.setCancelled(true);
         DuelType duelType;
         int duelTypeSlot = e.getSlot()-11;
@@ -24,7 +35,7 @@ public class GUIListener implements Listener {
         } catch (IndexOutOfBoundsException ignore){
             return;
         }
-        Player target = openInventories.get(e.getInventory());
+        Player target = duelSelection.get(e.getInventory());
         if (target == null){
             GameManager.joinQue((Player) e.getWhoClicked(), duelType);
         }
@@ -35,9 +46,11 @@ public class GUIListener implements Listener {
     }
 
 
+    public static void duelSelectionOpened(Inventory inventory, Player player){
+        duelSelection.put(inventory, player);
+    }
 
-
-    public static void inventoryOpened(Inventory inventory, Player player){
-        openInventories.put(inventory, player);
+    public static void mapsMenuOpened(Inventory inventory){
+        mapMenus.add(inventory);
     }
 }
