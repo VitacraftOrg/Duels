@@ -36,10 +36,12 @@ public class MapsMenu {
             }
             StringBuilder items = new StringBuilder();
             int x = 0;
+            items.append("§3");
             for (ItemStack itemStack : map.getItems().keySet()){
-                x++;
-                if (x >= 2) break;
+                if (x >= 3) break;
                 items.append(itemStack.getType().toString().replace("_", " ").toUpperCase());
+                items.append(", ");
+                x++;
             }
             if(items.toString().toLowerCase().contains("air")) items = new StringBuilder().append("§cnone");
             lore.add("§eItems: " + items);
