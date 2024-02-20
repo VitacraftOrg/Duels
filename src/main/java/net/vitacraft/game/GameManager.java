@@ -198,7 +198,6 @@ public class GameManager implements Listener {
                 duelMaps.put(foundDuelMap, true);
                 return foundDuelMap;
             }
-            break;
         }
         return null;
     }
