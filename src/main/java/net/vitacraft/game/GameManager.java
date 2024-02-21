@@ -302,7 +302,7 @@ public class GameManager implements Listener {
 
     @EventHandler
     public static void projectileHitEvent(ProjectileHitEvent e){
-        if ((e.getEntity().getName().toLowerCase().contains("arrow"))) return;
+        if (!(e.getEntity().getName().toLowerCase().contains("arrow"))) return;
         if (e.getHitBlock() != null) e.getEntity().remove();
     }
 
