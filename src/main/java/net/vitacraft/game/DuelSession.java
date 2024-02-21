@@ -12,10 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -229,6 +226,10 @@ public class DuelSession {
         if ((((Player) e.getEntity()).getHealth() - e.getDamage() <= 0)) {
             playerDied((Player) e.getEntity());
         }
+    }
+
+    public void onPlayerRegainHealth(EntityRegainHealthEvent e) {
+        if (type == DuelType.UHC && (e.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED || e.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN)) e.setCancelled(true);
     }
 
     public void blockPlaced(BlockPlaceEvent e){

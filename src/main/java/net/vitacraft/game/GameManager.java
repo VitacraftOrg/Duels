@@ -220,10 +220,34 @@ public class GameManager implements Listener {
        Listeners
      */
     @EventHandler
-    public static void onEntityDamage(EntityDamageByEntityEvent e){
+    public static void onEntityDamageByEntity(EntityDamageByEntityEvent e){
+        if (!(e.getEntity() instanceof Player)) return;
         for (DuelSession session : activeDuels){
             if (session.getPlayers().contains((Player) e.getEntity())) {
                 session.onPlayerDamage(e);
+                return;
+            }
+        }
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public static void onEntityDamage(EntityDamageEvent e){
+        if (!(e.getEntity() instanceof Player)) return;
+        for (DuelSession session : activeDuels){
+            if (session.getPlayers().contains((Player) e.getEntity())) {
+                return;
+            }
+        }
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public static void onEntityRegainHealth(EntityRegainHealthEvent e){
+        if (!(e.getEntity() instanceof Player)) return;
+        for (DuelSession session : activeDuels){
+            if (session.getPlayers().contains((Player) e.getEntity())) {
+                session.onPlayerRegainHealth(e);
                 return;
             }
         }
