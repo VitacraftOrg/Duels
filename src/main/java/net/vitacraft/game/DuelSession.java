@@ -4,6 +4,7 @@ import net.vitacraft.Duels;
 import net.vitacraft.api.messenger.MessageType;
 import net.vitacraft.api.messenger.Messenger;
 import net.vitacraft.api.messenger.NotificationReason;
+import net.vitacraft.api.rank.RankManager;
 import net.vitacraft.api.storage.Finances;
 import net.vitacraft.utils.CuboidRegion;
 import org.bukkit.GameMode;
@@ -124,7 +125,32 @@ public class DuelSession {
             Messenger.send(player, "§cStart!", NotificationReason.SOFT_WARNING, MessageType.TITLE);
         }
         gameState = GameState.PLAYING;
+
+        if (type == DuelType.BOXING){
+            player1 = players.get(0);
+            player2 = players.get(1);
+
+            prefix1 = RankManager.getPrefixedName(player1);
+            prefix2 = RankManager.getPrefixedName(player2);
+            runnable = new BukkitRunnable() {
+                public void run() {
+                    updateActionBar();
+                }
+            }.runTaskTimer(Duels.getPlugin(), 10L, 10L);
+        }
     }
+
+    private void updateActionBar(){
+        for (Player player : players){
+            Messenger.send(player, prefix1 + "§e " + hits.getOrDefault(player1,0) + "§8 || " + prefix2 + "§e " + hits.getOrDefault(player2,0), NotificationReason.IN_GAME, MessageType.ACTIONBAR);
+        }
+    }
+
+    private Player player1;
+    private Player player2;
+
+    private String prefix1;
+    private String prefix2;
 
     public void cancel(String reason){
         gameState = GameState.STOPPING;
@@ -133,6 +159,7 @@ public class DuelSession {
                 Messenger.send(player, reason, NotificationReason.SOFT_WARNING);
             }
         }
+        runnable.cancel();
         kill();
     }
 
@@ -172,6 +199,7 @@ public class DuelSession {
         }
 
         countdown = 101;
+        runnable.cancel();
         runnable = new BukkitRunnable() {
             public void run() {
                 countdown--;
@@ -217,13 +245,14 @@ public class DuelSession {
         if (type == DuelType.SUMO || type == DuelType.BOXING) e.setDamage(0);
         if (type == DuelType.BOXING) {
             hits.put((Player) e.getDamager(), hits.getOrDefault((Player) e.getDamager(), 0)+1);
+            updateActionBar();
             if (hits.get((Player) e.getDamager()) > 99){
                 List<Player> deadPlayer = new ArrayList<>(alivePlayers);
                 deadPlayer.remove((Player) e.getDamager());
                 playerDied(deadPlayer.get(0));
             }
         }
-        if ((((Player) e.getEntity()).getHealth() - e.getDamage() <= 0)) {
+        if ((((Player) e.getEntity()).getHealth() - e.getFinalDamage() <= 0)) {
             playerDied((Player) e.getEntity());
         }
     }
