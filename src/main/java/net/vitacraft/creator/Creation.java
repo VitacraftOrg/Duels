@@ -14,7 +14,7 @@ public class Creation {
     private final Player player;
     private CreationState creationState = CreationState.TYPE;
     private DuelType type;
-    private HashMap<ItemStack, Integer> items = new HashMap<>();
+    private final HashMap<Integer, ItemStack> items = new HashMap<>();
 
     private Location center;
     private Location spawn1;
@@ -82,7 +82,7 @@ public class Creation {
                 for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
                 ItemStack itemStack = player.getInventory().getItem(slot);
                 if (itemStack != null && !itemStack.getType().isAir()) {
-                    items.put(itemStack, slot);
+                    items.put(slot, itemStack);
                 }
             }
                 next();
@@ -202,7 +202,7 @@ public class Creation {
         return type;
     }
 
-    public HashMap<ItemStack, Integer> getItems(){
+    public HashMap<Integer, ItemStack> getItems(){
         return items;
     }
     public Location getCenter(){
