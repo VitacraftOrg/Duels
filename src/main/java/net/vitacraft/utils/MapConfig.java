@@ -16,7 +16,7 @@ public class MapConfig {
     private static final String file = "maps.yml";
     public static void saveMap(Creation creation){
         DuelType type = creation.getType();
-        HashMap<ItemStack, Integer> items = creation.getItems();
+        HashMap<Integer, ItemStack> items = creation.getItems();
         Location center = creation.getCenter();
         Location spawn1 = creation.getSpawn1();
         Location spawn2 = creation.getSpawn2();
@@ -28,8 +28,8 @@ public class MapConfig {
         ConfigUtil config = new ConfigUtil(Duels.getPlugin(),file);
 
         config.getConfig().set(id + ".type", type.toString());
-        for (ItemStack itemStack : items.keySet()){
-            config.getConfig().set(id + ".items." + items.get(itemStack), itemStack);
+        for (int slot : items.keySet()){
+            config.getConfig().set(id + ".items." + slot, items.get(slot));
         }
         config.getConfig().set(id + ".center", center);
         config.getConfig().set(id + ".spawn1", spawn1);
@@ -54,13 +54,13 @@ public class MapConfig {
             ConfigurationSection c = config.getConfig().getConfigurationSection(key);
             assert c != null;
             DuelType type = DuelType.valueOf(c.getString("type"));
-            HashMap<ItemStack, Integer> items = new HashMap<>();
+            HashMap<Integer, ItemStack> items = new HashMap<>();
             try{
                 for (String itemSection : Objects.requireNonNull(c.getConfigurationSection("items")).getKeys(false)){
-                    items.put(Objects.requireNonNull(c.getConfigurationSection("items.")).getItemStack(itemSection), Integer.valueOf(itemSection));
+                    items.put(Integer.valueOf(itemSection),Objects.requireNonNull(c.getConfigurationSection("items.")).getItemStack(itemSection));
                 }
             } catch (NullPointerException e){
-                items.put(new ItemStack(Material.AIR,1), 1);
+                items.put(1,new ItemStack(Material.AIR,1));
             }
             Location center = c.getLocation("center");
             Location spawn1 = c.getLocation("spawn1");

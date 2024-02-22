@@ -84,10 +84,10 @@ public class DuelSession {
 
         player1.teleport(map.getSpawn1());
         player2.teleport(map.getSpawn2());
-        HashMap<ItemStack, Integer> items = map.getItems();
+        HashMap<Integer, ItemStack> items = map.getItems();
         for (Player player : players){
-            for (ItemStack item : items.keySet()){
-                player.getInventory().setItem(items.get(item), item);
+            for (int slot : items.keySet()){
+                player.getInventory().setItem(slot, items.get(slot));
             }
             player.setHealth(20);
             player.setSaturation(20);

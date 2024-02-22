@@ -37,7 +37,7 @@ public class MapsMenu {
             StringBuilder items = new StringBuilder();
             int x = 0;
             items.append("§3");
-            for (ItemStack itemStack : map.getItems().keySet()){
+            for (ItemStack itemStack : map.getItems().values()){
                 if (x >= 3) break;
                 items.append(itemStack.getType().toString().replace("_", " ").toUpperCase());
                 items.append(", ");

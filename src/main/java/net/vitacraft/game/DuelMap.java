@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class DuelMap {
     private final DuelType type;
-    private final HashMap<ItemStack, Integer> items;
+    private final HashMap<Integer, ItemStack> items;
 
     private final Location center;
     private final Location spawn1;
@@ -15,7 +15,7 @@ public class DuelMap {
     private final Location vertex;
     private final Location vertex2;
 
-    public DuelMap(DuelType type, HashMap<ItemStack, Integer> items, Location center, Location spawn1, Location spawn2, Location vertex, Location vertex2) {
+    public DuelMap(DuelType type, HashMap<Integer, ItemStack> items, Location center, Location spawn1, Location spawn2, Location vertex, Location vertex2) {
         this.type = type;
         this.items = items;
         this.center = center;
@@ -49,7 +49,7 @@ public class DuelMap {
         return vertex2;
     }
 
-    public HashMap<ItemStack, Integer> getItems(){
+    public HashMap<Integer, ItemStack> getItems(){
         return items;
     }
 }
